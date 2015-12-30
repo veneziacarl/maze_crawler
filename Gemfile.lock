@@ -9,6 +9,8 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     slop (3.6.0)
+    texplay (0.4.3)
+      gosu (>= 0.7.25)
 
 PLATFORMS
   ruby
@@ -16,6 +18,7 @@ PLATFORMS
 DEPENDENCIES
   gosu
   pry
+  texplay
 
 BUNDLED WITH
    1.10.6

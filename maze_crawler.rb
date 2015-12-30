@@ -1,19 +1,27 @@
 require "gosu"
 require_relative "world"
 require 'pry'
+require 'texplay'
 
 class MazeCrawler < Gosu::Window
   SCREEN_WIDTH = 1428
   SCREEN_HEIGHT = 1000
 
   TILE_IMAGE = Gosu::Image.new('./bitmaps/dungeonTile.png')
+  LAVA_IMAGE = Gosu::Image.new('./bitmaps/lavaTile.png')
+
+  LEVELS = []
+
+  LEVELS << Gosu::Image.new('./levels/lvltest.png')
+
 
   attr_reader :world, :mine_font, :large_font, :state
 
   def initialize
     super(SCREEN_WIDTH, SCREEN_HEIGHT, false)
 
-    @world = World.new(25, 25)
+    @level = 0
+    @world = World.new(25, 25, LEVELS[@level])
     @mine_font = Gosu::Font.new(self, "Arial", (cell_size / 1.2).to_i)
     @large_font = Gosu::Font.new(self, "Arial", screen_height / 6)
     @state = :running
@@ -53,7 +61,7 @@ class MazeCrawler < Gosu::Window
   end
 
   def draw
-    draw_rect(0, 0, screen_width, screen_height, Gosu::Color::GREEN)
+    draw_rect(0, 0, screen_width, screen_height, Gosu::Color::BLACK)
     draw_rect(start_x, start_y, world_width, world_height, Gosu::Color::BLACK)
 
     dark_gray = Gosu::Color.new(50, 50, 50)
@@ -74,20 +82,13 @@ class MazeCrawler < Gosu::Window
           draw_rect(x + 2, y + 2, cell_size - 4, cell_size - 4, color)
         elsif world.value_grid[[row,col]].visible
             image = TILE_IMAGE
+            if world.value_grid[[row, col]].lava
+              image = LAVA_IMAGE
+            end
             image.draw(x, y, 1)
         else
           color = dark_gray
         end
-        # if adjacent_spaces
-        #   adjacent_spaces.each do |space|
-        #     color = Gosu::Color::YELLOW
-        #     draw_rect(x, y, cell_size, cell_size, Gosu::Color.new(255, 255, 0))
-        #     draw_rect(x + 2, y + 2, cell_size - 4, cell_size - 4, color)
-        #   end
-        # end
-
-        #draw_rect(x, y, cell_size, cell_size, dark_gray)
-
       end
     end
 

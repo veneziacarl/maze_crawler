@@ -3,13 +3,15 @@ require_relative 'square.rb'
 
 class World
   attr_reader :row_count, :column_count, :value_grid, :character_position
+  attr_accessor :level
 
-  def initialize(row_count, column_count)
+  def initialize(row_count, column_count, level)
     @column_count = column_count
     @row_count = row_count
     @board_grid = []
     @value_grid = {}
     @character_position = []
+    @level = level
     make_value_grid
   end
 
@@ -23,12 +25,21 @@ class World
 
   def make_value_grid
     make_board_grid
+
     @board_grid.each do |space|
+      pixColor = level.get_pixel(space[0], space[1])
       @value_grid[space] = Square.new
+      if pixColor[0] == 1 && pixColor[1] == 0 && pixColor[2] == 0
+        @value_grid[space].lava = true
+      elsif pixColor[0] == 0 && pixColor[1] == 1 && pixColor[2] == 0
+        @character_position = [space[0], space[1]]
+        move_character(@character_position[0], @character_position[1])
+      elsif pixColor[0] == 1 && pixColor[1] == 1 && pixColor[2] == 0
+        @value_grid[space].key = true
+      elsif pixColor[0] == 0 && pixColor[1] == 0 && pixColor[2] == 1
+        @value_grid[space].portal = true
+      end
     end
-    @character_position = [0, 0]
-    move_character(0, 0)
-    # @value_grid[@character_position].character_present = true
   end
 
   def move_character(row, col)

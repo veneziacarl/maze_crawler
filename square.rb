@@ -1,5 +1,5 @@
 class Square
-  attr_accessor :character_present, :visible
+  attr_accessor :character_present, :visible, :lava, :portal, :key
   def initialize
     @monster = false
     @trap = false
@@ -7,6 +7,8 @@ class Square
     @visible = false
     @explored = false
     @character_present = false
+    @portal = false
+    @key = false
   end
 
 
