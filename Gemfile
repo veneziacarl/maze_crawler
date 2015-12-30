@@ -5,3 +5,5 @@ gem 'gosu'
 gem 'pry'
 
 gem 'texplay'
+gem 'rspec'
+gem 'factory_girl'

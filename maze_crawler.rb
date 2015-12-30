@@ -1,3 +1,4 @@
+require "file_helper"
 require "gosu"
 require_relative "world"
 require 'pry'
