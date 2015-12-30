@@ -47,8 +47,8 @@ DEPENDENCIES
   factory_girl
   gosu
   pry
-  texplay
   rspec
+  texplay
 
 BUNDLED WITH
    1.10.6

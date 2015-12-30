@@ -54,7 +54,11 @@ class World
   end
 
   def valid_move?(row, col)
-    row < row_count && col < column_count && row >= 0 && col >= 0
+    row < row_count && col < column_count && row >= 0 && col >= 0 && on_path?(row, col)
+  end
+
+  def on_path?(row, col)
+    !@value_grid[[row, col]].lava
   end
 
 
