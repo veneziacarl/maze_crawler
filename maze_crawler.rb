@@ -24,7 +24,6 @@ class MazeCrawler < Gosu::Window
 
     @level = 0
     @world = World.new(25, 25, LEVELS[@level])
-    # @mine_font = Gosu::Font.new(self, "Arial", (cell_size / 1.2).to_i)
     @large_font = Gosu::Font.new(self, "Arial", screen_height / 50)
     @state = :running
     @timer = Timer.new
@@ -74,6 +73,7 @@ class MazeCrawler < Gosu::Window
     light_gray = Gosu::Color.new(200, 200, 200)
 
     draw_text(25,25,"level #{@level+1}", large_font)
+    draw_text(25,65,"#{@timer.hours}:#{@timer.minutes}:#{@timer.seconds}", large_font)
 
 
     if @world.next_level?
@@ -82,7 +82,6 @@ class MazeCrawler < Gosu::Window
       draw_text(25,45,"got key! try to find the blue space", large_font, Gosu::Color::RED)
     else
       draw_text(25,45,"key required before entering portal", large_font, Gosu::Color::BLACK)
-      draw_text(25,65,"#{@timer.hours}:#{@timer.minutes}:#{@timer.seconds}", large_font)
     end
 
     (0...world.row_count).each do |row|
