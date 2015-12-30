@@ -1,7 +1,7 @@
 require_relative 'file_helper'
 
 class Character
-  attr_reader :type, :max_hp, :current_hp, :str
+  attr_reader :type, :max_hp, :current_hp, :str, :inventory
 
   def initialize(attributes)
     @type = attributes[:type]

@@ -2,6 +2,7 @@ require_relative "file_helper"
 require "gosu"
 require_relative "world"
 require 'pry'
+require_relative "timer"
 require 'texplay'
 
 class MazeCrawler < Gosu::Window
@@ -24,8 +25,9 @@ class MazeCrawler < Gosu::Window
     @level = 0
     @world = World.new(25, 25, LEVELS[@level])
     # @mine_font = Gosu::Font.new(self, "Arial", (cell_size / 1.2).to_i)
-    @large_font = Gosu::Font.new(self, "Arial", screen_height / 6)
+    @large_font = Gosu::Font.new(self, "Arial", screen_height / 50)
     @state = :running
+    @timer = Timer.new
   end
 
   def button_down(key)
@@ -62,12 +64,26 @@ class MazeCrawler < Gosu::Window
   end
 
   def draw
+    @timer.update
     draw_rect(0, 0, screen_width, screen_height, Gosu::Color::BLACK)
     draw_rect(start_x, start_y, world_width, world_height, Gosu::Color::BLACK)
+    draw_rect(hud_start_x, hud_start_y, hud_width, hud_height, Gosu::Color::WHITE)
 
     dark_gray = Gosu::Color.new(50, 50, 50)
     gray = Gosu::Color.new(127, 127, 127)
     light_gray = Gosu::Color.new(200, 200, 200)
+
+    draw_text(25,25,"level #{@level+1}", large_font)
+
+
+    if @world.next_level?
+      draw_text(25,45,"you won!", large_font, Gosu::Color::GREEN)
+    elsif @world.player.inventory.has_key?
+      draw_text(25,45,"got key! try to find the blue space", large_font, Gosu::Color::RED)
+    else
+      draw_text(25,45,"key required before entering portal", large_font, Gosu::Color::BLACK)
+      draw_text(25,65,"#{@timer.hours}:#{@timer.minutes}:#{@timer.seconds}", large_font)
+    end
 
     (0...world.row_count).each do |row|
       (0...world.column_count).each do |col|
@@ -78,8 +94,6 @@ class MazeCrawler < Gosu::Window
           color = Gosu::Color::RED
 
           adjacent_spaces = world.find_adjacent_spaces(row, col)
-            # draw_rect(x, y, cell_size, cell_size, Gosu::Color.new(255, 255, 0))
-            # draw_rect(x+2, y+2, cell_size-4, cell_size-4, Gosu::Color.new(255, 255, 255))
           draw_rect(x + 2, y + 2, cell_size - 4, cell_size - 4, color)
         elsif world.value_grid[[row, col]].key && world.value_grid[[row,col]].visible
             color = Gosu::Color::YELLOW
@@ -98,8 +112,6 @@ class MazeCrawler < Gosu::Window
         end
       end
     end
-
-
 
     case state
     when :lost
@@ -128,12 +140,27 @@ class MazeCrawler < Gosu::Window
     cell_size * world.row_count
   end
 
+  def hud_width
+    world_width * 0.4
+  end
+
+  def hud_height
+    world_height * 0.1
+  end
   def start_x
     (screen_width - world_width) / 2.0
   end
 
   def start_y
     (screen_height - world_height) / 2.0
+  end
+
+  def hud_start_x
+    20
+  end
+
+  def hud_start_y
+    20
   end
 
   def needs_cursor?
@@ -147,8 +174,8 @@ class MazeCrawler < Gosu::Window
       x, y + height, color)
   end
 
-  def draw_text(x, y, text, font)
-    font.draw(text, x, y, 1, 1, 1, Gosu::Color::BLACK)
+  def draw_text(x, y, text, font, color = Gosu::Color::BLUE)
+    font.draw(text, x, y, 1, 1, 1, color)
   end
 
   def draw_text_centered(text, font)

@@ -2,7 +2,7 @@ require 'pry'
 require_relative 'square.rb'
 
 class World
-  attr_reader :row_count, :column_count, :value_grid, :character_position
+  attr_reader :row_count, :column_count, :value_grid, :character_position, :player
   attr_accessor :level
 
   def initialize(row_count, column_count, level)
@@ -12,6 +12,7 @@ class World
     @value_grid = {}
     @character_position = []
     @level = level
+    @player = Character.new({max_hp: 10, str: 5, type: :player})
     make_value_grid
   end
 
@@ -50,6 +51,11 @@ class World
       find_adjacent_spaces(row, col).each do |space|
         @value_grid[space].visible = true
       end
+      if @value_grid[@character_position].key
+        level_key = Item.new({name: 'key', str_mod: 0, hp_mod: 0})
+        @player.add_inventory(level_key)
+        @value_grid[@character_position].key = false
+      end
     end
   end
 
@@ -61,6 +67,9 @@ class World
     !@value_grid[[row, col]].lava
   end
 
+  def next_level?
+    @value_grid[@character_position].portal && @player.inventory.has_key?
+  end
 
   def find_adjacent_spaces(row, col)
     adjacent_spaces = []
