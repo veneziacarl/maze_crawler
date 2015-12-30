@@ -20,4 +20,8 @@ class Inventory
       "Error"
     end
   end
+
+  def has_key?
+    @items.any? { |item| item.name == 'key' }
+  end
 end
